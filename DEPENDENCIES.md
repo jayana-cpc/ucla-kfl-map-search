@@ -3,6 +3,13 @@
 - Database: MySQL 5.7+ or MariaDB 10.3+ with GIS functions (`MBRContains`, `GeomFromText`) enabled.
 - Web server: Apache with mod_php or PHP-FPM; document root should be the repo root so `index.php` resolves assets under `map_search/`.
 
+### Environment variables (preferred for Docker/local)
+- `APP_HOST` (e.g., `http://localhost:8000/`)
+- `APP_SECRET` (cookie/token salt)
+- `DB_HOST`, `DB_USERNAME`, `DB_PASSWORD`, `DB_NAME`
+- `DEV_LOGIN` (`1/true/yes` to bypass Shibboleth and auto-login as admin for dev)
+- Example file: `.env.example`
+
 ## Front-end asset vendoring (preferred: commit assets)
 The repo does not ship `map_search/bower_components/` or compiled CSS. Use HTTPS to fetch prebuilt artifacts, then commit them:
 
@@ -26,11 +33,15 @@ The repo does not ship `map_search/bower_components/` or compiled CSS. Use HTTPS
 
 After running the above, commit `map_search/bower_components/` and `map_search/main.css`.
 
+## Seeds for local/demo data
+- Run `migrations/initial_setup.sql` to create schema.
+- Run `migrations/dev_seed.sql` to insert a dev admin user (`devadmin`) plus sample consultant/context/data with a spatial point for the map.
+
 ## Optional Box (file storage)
 - The app can offload uploaded files to Box using the Box JWT PHP SDK. That code is optional for a demo; if needed later, place the SDK in `box-jwt-php/` and configure `box.config.php` plus key files (`*.pem`).
 
 ## Auth note
-- Production expects Shibboleth to set a `kfl` cookie. For Docker/local, we’ll add a DEV_LOGIN toggle later to bypass external SSO.
+- Production expects Shibboleth to set a `kfl` cookie. For Docker/local, set `DEV_LOGIN=1` to bypass external SSO and auto-login as admin.
 
 ## Local build helper (future)
 - A helper script will be added under `map_search/scripts/` to download the above assets over HTTPS; network access is required when running it.

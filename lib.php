@@ -85,6 +85,10 @@ function get_records($table, $collector_id=false) {
 
 function check_auth() {
     global $user;
+    if (defined('DEV_LOGIN') && DEV_LOGIN === true) {
+        // Dev mode: skip cookie checks
+        return $user;
+    }
     if (isset($_COOKIE['kfl'])){
         if (!$user->auth) { exit('Not authorized'); }
         if (!$user->is_user()) { 
@@ -221,4 +225,3 @@ function run_quarter_report($quarter_id){
 function check_test(){
     return "hello";
 }
-

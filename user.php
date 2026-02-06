@@ -3,6 +3,20 @@ class User {
     private $data = array();
     public $auth = false;
     function __construct() {
+        // Dev shortcut: skip external auth when DEV_LOGIN=true
+        if (defined('DEV_LOGIN') && DEV_LOGIN === true) {
+            $this->auth = true;
+            $this->data = array(
+                'id' => 1,
+                'collector_id' => 1,
+                'sid' => 'devadmin',
+                'first_name' => 'Dev',
+                'last_name' => 'Admin',
+                'email' => 'dev@example.com',
+                'status' => 2
+            );
+            return;
+        }
         if (isset($_COOKIE['kfl'])) {
             $md5 = substr($_COOKIE['kfl'], 0 , 32);
             $id = substr($_COOKIE['kfl'], 32);

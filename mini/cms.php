@@ -76,9 +76,10 @@ class MiniCMS {
 
 	public function head() {
 		$title = ($this->title) ? $this->title . ' - ' . $this->config['site_name'] : $this->config['site_name']; 
-		$js = ''; foreach($this->js as $t) $js .= "<script src='$t'></script>\n";
-		$css = ''; foreach($this->css as $t) $css .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"$t\" media=\"screen,projection\" />\n";
-		$baseref = 'https://' . $_SERVER['HTTP_HOST'] . preg_replace('#/[^/]+$#','/',$_SERVER['SCRIPT_NAME']);
+        $js = ''; foreach($this->js as $t) $js .= "<script src='$t'></script>\n";
+        $css = ''; foreach($this->css as $t) $css .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"$t\" media=\"screen,projection\" />\n";
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 'https' : 'http';
+        $baseref = $scheme . '://' . $_SERVER['HTTP_HOST'] . preg_replace('#/[^/]+$#','/',$_SERVER['SCRIPT_NAME']);
 		$style = '';
 		if (count($this->style) > 0) {
 			$style = '<style type="text/css">' . "\n";
@@ -110,5 +111,4 @@ HEAD;
 }
 
 $cms = new MiniCMS();
-
 
