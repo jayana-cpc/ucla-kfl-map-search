@@ -1,0 +1,108 @@
+/* 
+    Created on : Dec 6, 2013, 10:37:12 AM
+    Author     : dave
+*/
+
+#menu {
+    min-height: 0px;
+}
+
+.search-form {
+    margin: 6px;
+
+    button.ui-multiselect {
+        max-width: 100px;
+    }
+
+
+    input[type=text] {
+        width: 95px;
+    }
+
+    select, button.ui-multiselect {
+        width: 100px;
+    }
+
+    input[type=text], select, button.ui-multiselect {
+        display: inline-block;
+        float: left;
+        margin: 5px;
+    }
+
+    label {
+        display: inline-block;
+        float: left;
+        clear: left;
+        width: 100px;
+        margin: 5px 0px;
+    }
+
+}
+
+.collector-age, .consultant-age {
+    height: 20px;
+    display: inline-block;
+    clear: both;
+    width: 200px;
+    margin: 5px;
+    margin-top: 28px;
+}
+
+#search-wrapper {
+    position: absolute;
+    width: 20%;
+    top: 10px;
+    left: 50px;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.75);
+}
+
+
+.fieldset-header {
+    clear: both;
+
+    padding: 10px;
+
+    background: #E9E9E9;
+    font-size: 15px;
+    color: #1a2d7f;
+    border: 1px solid rgb(189, 189, 189);
+    border-bottom: none;
+
+    span {
+        position: relative;
+        right: 10px;
+    }
+
+    :last-of-type {
+        border-bottom: 1px solid rgb(189, 189, 189);
+    }
+
+}
+
+.fieldset-header.last {
+    border-bottom: 1px solid rgb(189, 189, 189);
+}
+
+.fieldset-body {
+    background: #f0f0f0;
+
+    border: 1px solid lightgray;
+    padding: 11px 10px 11px 15px;
+
+    label {
+        font-weight: normal;
+    }
+
+}
+
+
+.background-filler {
+    clear: both;
+}
+
+.search-button-wrapper {
+    position: absolute;
+    margin: 4px 20px 10px 180px;
+    /*left: 200px;*/
+}

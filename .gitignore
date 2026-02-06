@@ -1,0 +1,27 @@
+## Editor cruft
+*.swp
+.DS_Store
+
+## Secrets / credentials
+dbconfig.php
+mini/passcode.txt
+box.config.php
+box-jwt-php/
+*.pem
+*.key
+*.p12
+.env
+.env.local
+
+## Uploaded or exported data
+files/
+anonymized_data/
+uploads/
+
+## Vendor / build output
+vendor/
+node_modules/
+map_search/.sass-cache
+
+## IDE project files
+nbproject

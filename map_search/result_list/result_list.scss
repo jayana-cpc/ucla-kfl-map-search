@@ -1,0 +1,65 @@
+/* 
+    Created on : Dec 6, 2013, 10:45:26 AM
+    Author     : dave
+*/
+
+#result-list-wrapper {
+
+    border: 2px solid #D9D9D9;
+    padding: 25px;
+    background: white;
+    
+    h2 {
+        font-size: 18px;
+        color: gray;
+    }
+    
+    .next-page, .prev-page {
+        color: #D9D9D9;
+        position: absolute;
+        top: 0px;
+        width: 20px;
+        height: 20px;
+        padding: 6px;
+        font-weight: normal;
+        font-size: 1.5em;
+    }
+
+    .next-page {
+        right: 0px;
+    }
+
+    .prev-page {
+        right: 35px;
+        border-right: 1px solid #D9D9D9;
+    }
+
+    .active {
+        color: black;
+        border: 1px solid black;
+        cursor: pointer;
+    }
+
+    .summary-item {
+        margin: 0px;
+        border-bottom: 1px dashed #d0d0d0;
+    }
+
+    ul.result-title {
+        padding: 0px;
+    }
+
+    ul.result-title li {
+        display: inline;
+        text-decoration: underline;
+        font-weight: bold;
+        list-style-type: none;
+        padding-right: 20px;
+    }
+
+    .description {
+        /*padding: 20px;*/
+        padding-bottom: 20px;
+    }
+
+}

@@ -1,0 +1,24 @@
+# Mac files
+.DS_Store
+
+# Vim
+*.swp
+
+# NetBeans
+nbproject
+
+# Bower
+bower_components
+
+# Project-specific (because we are using SCSS)
+*.css
+
+# Build artifacts
+.sass-cache
+dist/
+
+# Secrets/keys (in case devs drop them here)
+*.pem
+*.key
+*.p12
+*.env
