@@ -7,12 +7,6 @@
 # NetBeans
 nbproject
 
-# Bower
-bower_components
-
-# Project-specific (because we are using SCSS)
-*.css
-
 # Build artifacts
 .sass-cache
 dist/
