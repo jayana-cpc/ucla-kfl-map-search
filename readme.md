@@ -6,6 +6,16 @@ Simply clone the repository:
 
 `git clone git@bitbucket.org:uclacdh/kfl-map-search.git`
 
+## Quick start (Docker)
+
+1. Copy `.env.example` to `.env` and adjust values if needed.
+2. Build and run: `docker-compose up -d --build`
+3. Open `http://localhost:8000/` (with `DEV_LOGIN=1` in `.env`, you are auto-logged in for dev).
+
+Notes:
+- MySQL seeds from `migrations/initial_setup.sql` and `migrations/dev_seed.sql` on first run.
+- Box integration is disabled by default; set `BOX_ENABLED=1` and mount `box-jwt-php/` if you need it.
+
 ### Box
 
 This application uses a Box JWT PHP Library for file storage.

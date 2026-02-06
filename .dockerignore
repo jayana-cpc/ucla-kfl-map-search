@@ -1,0 +1,11 @@
+.git
+.gitignore
+node_modules
+vendor
+db_data
+*.log
+docker-compose.override.yml
+composer.lock
+npm-debug.log
+package-lock.json
+box-jwt-php

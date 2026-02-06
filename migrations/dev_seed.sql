@@ -5,13 +5,15 @@ INSERT INTO quarter (quarter_short_name, is_current_quarter)
 VALUES ('SP25', 1)
 ON DUPLICATE KEY UPDATE is_current_quarter = VALUES(is_current_quarter);
 
-INSERT INTO collector (collector_id, collector_last_name, collector_first_name, collector_sid, collector_email, collector_status, collector_language)
-VALUES (1, 'Admin', 'Dev', 'devadmin', 'dev@example.com', 2, 'english')
-ON DUPLICATE KEY UPDATE collector_status = VALUES(collector_status);
+INSERT INTO collector (collector_id, collector_last_name, collector_first_name, collector_sid, collector_email, collector_status, collector_language, collector_age)
+VALUES (1, 'Admin', 'Dev', 'devadmin', 'dev@example.com', 2, 'english', 30)
+ON DUPLICATE KEY UPDATE collector_status = VALUES(collector_status),
+    collector_age = VALUES(collector_age);
 
-INSERT INTO consultant (consultant_id, collector_id, consultant_last_name, consultant_first_name, consultant_gender, consultant_occupation, consultant_language, consultant_quarter_created)
-VALUES (1, 1, 'Kim', 'Sample', 'F', 'Student', 'english', NULL)
-ON DUPLICATE KEY UPDATE collector_id = VALUES(collector_id);
+INSERT INTO consultant (consultant_id, collector_id, consultant_last_name, consultant_first_name, consultant_gender, consultant_occupation, consultant_language, consultant_quarter_created, consultant_age)
+VALUES (1, 1, 'Kim', 'Sample', 'F', 'Student', 'english', NULL, 30)
+ON DUPLICATE KEY UPDATE collector_id = VALUES(collector_id),
+    consultant_age = VALUES(consultant_age);
 
 INSERT INTO context (context_id, collector_id, context_city, context_state, context_country, context_place, context_time, context_date, context_weather, context_language, context_media, context_event_type, context_event_name, context_otherpresent_num, context_description, context_consultants, context_spatial_point, context_quarter_created)
 VALUES (
