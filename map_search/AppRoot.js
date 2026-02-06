@@ -25,6 +25,9 @@ var KFA = {
                 model: search
             });
             map.addLayer(resultLayer);
+            // Keep references for debugging/inspection.
+            this._map = map;
+            this._resultLayer = resultLayer;
 
             var resultList = new KFA.ResultList.List({
                 model: search,
@@ -32,7 +35,7 @@ var KFA = {
                 el: "#result-list-wrapper"
             });
             resultList.render();
+
         }
     })
 };
-

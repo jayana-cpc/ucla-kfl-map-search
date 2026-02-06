@@ -16,10 +16,12 @@ KFA.InputForm.Form = Backbone.View.extend({
             return parseInt($el);
         });
         minDate = new Date(minDate[0], minDate[1] - 1, minDate[2]);
-        this.$el.find('.context-date-from').datepicker({
-            defaultDate: minDate
-        });
-        this.$el.find('.context-date-to').datepicker();
+        if ($.fn.datepicker) {
+            this.$el.find('.context-date-from').datepicker({
+                defaultDate: minDate
+            });
+            this.$el.find('.context-date-to').datepicker();
+        }
     },
 
     multiSelectFields: [
@@ -46,7 +48,9 @@ KFA.InputForm.Form = Backbone.View.extend({
     _addAgeSliders: function ($selectors) {
         for (var i = 0; i < $selectors.length; i++) {
             var selector = $selectors[i];
-            this.$el.find(selector).rangeSlider({
+            var slider = this.$el.find(selector);
+            if (!slider.rangeSlider) { continue; }
+            slider.rangeSlider({
                 bounds : {min: 18, max: 80},
                 defaultValues: {
                     min: 20,
@@ -67,7 +71,8 @@ KFA.InputForm.Form = Backbone.View.extend({
     },
 
     render: function () {
-        var html = Mustache.compile(this.template);
+        // Mustache 0.7.x does not support compile(); render directly.
+        var html = Mustache.render(this.template);
         this.$el.append(html);
         $(".collapsible").collapsible();
         $(".collapsible").collapsible("open");
@@ -102,8 +107,12 @@ KFA.InputForm.Form = Backbone.View.extend({
             value = $.datepicker.formatDate('yy-mm-dd', this.$el.find($field).datepicker("getDate"));
         } else if (this.ageSliders.indexOf($field) !== -1) {
             // TODO: set value
-            var raw = this.$el.find($field).rangeSlider("values");
-            value = Math.round(raw.min) + "," + Math.round(raw.max);
+            var raw = this.$el.find($field).rangeSlider ? this.$el.find($field).rangeSlider("values") : null;
+            if (raw && raw.min != null && raw.max != null) {
+                value = Math.round(raw.min) + "," + Math.round(raw.max);
+            } else {
+                value = null;
+            }
         } else {
             var el = this.$el.find($field),
                 tagName = el.prop('tagName'),
@@ -160,7 +169,7 @@ KFA.InputForm.Form = Backbone.View.extend({
     },
 
     events: {
-        "submit.search" : "_updateModel"
+        "submit" : "_updateModel"
     }
 });
 

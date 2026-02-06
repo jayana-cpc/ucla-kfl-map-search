@@ -26,16 +26,36 @@ KFA.Map.ResultLayer = Backbone.View.extend({
     },
 
     _refreshLayer: function ($data) {
-        this._layer.addFeatures(this._format.read($data.features));
+        var feats = this._format.read($data.features || []);
+        // Transform from WGS84 (GeoJSON lon/lat) to web mercator for the map
+        var epsg4326 = new OpenLayers.Projection("EPSG:4326");
+        var epsg900913 = new OpenLayers.Projection("EPSG:900913");
+        for (var i = 0; i < feats.length; i++) {
+            if (feats[i].geometry) {
+                feats[i].geometry.transform(epsg4326, epsg900913);
+            }
+        }
+        this._layer.addFeatures(feats);
+
+        // Auto-zoom to results if any features were added
+        if (feats.length > 0) {
+            var extent = this._layer.getDataExtent();
+            if (extent) {
+                // small padding in map units (~WebMercator meters)
+                extent.left  -= 50;
+                extent.right += 50;
+                extent.top   += 50;
+                extent.bottom-= 50;
+                // Access parent map via the OpenLayers layer's map ref
+                if (this._layer.map) {
+                    this._layer.map.zoomToExtent(extent);
+                }
+            }
+        }
     },
 
     _searchResultsChanged: function () {
         this._layer.removeAllFeatures();
-
-        // Don't query if the model is now empty
-        if (_.isEmpty(this.model.toJSON())) {
-            return;
-        }
 
         $.get("../map_search/search/search.php", this.model.toJSON(), 
             function ($context) {
@@ -49,4 +69,3 @@ KFA.Map.ResultLayer = Backbone.View.extend({
             }(this), "json");
     }
 });
-

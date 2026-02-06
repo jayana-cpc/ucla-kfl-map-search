@@ -33,9 +33,10 @@ if (isset($_GET['context_bbox'])) {
     $bbox = explode(",", $bbox);
     $polygon = "Polygon(($bbox[0] $bbox[1],$bbox[0] $bbox[3],$bbox[2] $bbox[3],
         $bbox[2] $bbox[1],$bbox[0] $bbox[1]))";
-    $res_query->and("MBRContains(GeomFromText(?),co.context_spatial_point) = 1"
+    // Use ST_GeomFromText for MySQL 8/9+ compatibility
+    $res_query->and("MBRContains(ST_GeomFromText(?),co.context_spatial_point) = 1"
         , $polygon);
-    $count_query->and("MBRContains(GeomFromText(?),co.context_spatial_point) = 1"
+    $count_query->and("MBRContains(ST_GeomFromText(?),co.context_spatial_point) = 1"
         , $polygon);
 }
 
@@ -412,8 +413,8 @@ if (isset($_GET['description'])) {
 $connection_count = get_connection();
 $statement_count = $connection_count->prepare($count_query);
 if (sizeof($count_query->params()) > 1) {
-    call_user_func_array(array($statement_count, 'bind_param'), 
-        $count_query->params());
+    $params = array_values($count_query->params());
+    call_user_func_array(array($statement_count, 'bind_param'), $params);
 }
 $statement_count->execute();
 $statement_count->bind_result($total);
@@ -466,7 +467,8 @@ $res_query->limit("$offset, $limit");
 $connection = get_connection();
 $statement = $connection->prepare($res_query);
 if (sizeof($res_query->params()) > 1) {
-    call_user_func_array(array($statement, 'bind_param'), $res_query->params());
+    $params = array_values($res_query->params());
+    call_user_func_array(array($statement, 'bind_param'), $params);
 }
 $statement->execute();
 $statement->bind_result($city, $date, $description, $projectTitle, $dataId, 
@@ -495,4 +497,3 @@ if (isset($results)) {
         "error" => "No Results Found",
        ));
 }
-

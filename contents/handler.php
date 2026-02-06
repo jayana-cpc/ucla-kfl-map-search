@@ -4,8 +4,14 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once (__DIR__.'/../box-jwt-php/bootstrap/autoload.php');
-require_once (__DIR__.'/../box-jwt-php/helpers/helpers.php');
+// Box SDK is optional; guard to avoid fatal if not present.
+$box_autoload = __DIR__ . '/../box-jwt-php/bootstrap/autoload.php';
+$box_helpers  = __DIR__ . '/../box-jwt-php/helpers/helpers.php';
+$BOX_AVAILABLE = file_exists($box_autoload) && file_exists($box_helpers);
+if ($BOX_AVAILABLE) {
+    require_once $box_autoload;
+    require_once $box_helpers;
+}
 
 use Box\Auth\BoxJWTAuth;
 use Box\BoxClient;
@@ -17,8 +23,9 @@ if (!$user->auth) {exit('Not authorized');}
 
 $dbConn = get_connection();
 
-function error_message() {
-	echo "An error occured while saving this form. Your progress has not been saved.";
+function error_message($msg = null) {
+	$msg = $msg ?: "An error occured while saving this form. Your progress has not been saved.";
+	echo $msg;
 	exit;
 }
 
@@ -44,6 +51,11 @@ function get_set_sql($f) {
 function get_file() {
 
 	//add box upload info
+	if (!$GLOBALS['BOX_AVAILABLE']) {
+		// Box SDK not installed; skip upload and signal failure to caller.
+		return false;
+	}
+
 	$boxJwt     = new BoxJWTAuth();
 	$boxConfig  = $boxJwt->getBoxConfig();
 	$adminToken = $boxJwt->adminToken();
@@ -285,36 +297,40 @@ switch($table) {
 		break;
 }
 
-if (!$id && $action == "archive"){
-	$sql = "update $table set ${table}_status = 0 where ${table}_id in (". get_set_group_sql($sql_set) . ")" . get_auth_sql();
-	if(!mysqli_query($dbConn, $sql)) {
-		error_message();
-	}
-}
-else if (!$id && $action == "activate"){
-	$sql = "update $table set ${table}_status = 1 where ${table}_id in (". get_set_group_sql($sql_set) . ")" . get_auth_sql();
-	if(!mysqli_query($dbConn, $sql)) {
-		error_message();
-	}
-}
-else if (!$id) {
-	if ($table != 'collector'){
-		if ($user->is_admin() && $cid != $user->get('id') && $action == "add"){
-			$sql_set['collector_id'] = $cid;
-		}
-		else{
-			$sql_set['collector_id'] = $user->get('id');
+	if (!$id && $action == "archive"){
+		$sql = "update $table set ${table}_status = 0 where ${table}_id in (". get_set_group_sql($sql_set) . ")" . get_auth_sql();
+		if(!mysqli_query($dbConn, $sql)) {
+			error_message();
 		}
 	}
-
-	if ($table == 'consultant' || $table == 'context' || $table == 'data'){
-		$sql_set[$table.'_quarter_created'] = get_current_quarter();
+	else if (!$id && $action == "activate"){
+		$sql = "update $table set ${table}_status = 1 where ${table}_id in (". get_set_group_sql($sql_set) . ")" . get_auth_sql();
+		if(!mysqli_query($dbConn, $sql)) {
+			error_message(mysqli_error($dbConn));
+		}
 	}
+	else if (!$id) {
+		if ($table != 'collector'){
+			if ($user->is_admin() && $cid != $user->get('id') && $action == "add"){
+				$sql_set['collector_id'] = $cid;
+			} else {
+				$sql_set['collector_id'] = $user->get('id');
+			}
+		}
 
-	$f = preprocess_sqlset($table,$sql_set);
-	$sql = "insert into $table set " . get_set_sql($f);
+		if ($table == 'consultant' || $table == 'context' || $table == 'data'){
+			$sql_set[$table.'_quarter_created'] = get_current_quarter();
+		}
 
-	if(!mysqli_query($dbConn, $sql)) {
+		// Enforce required consultant link for context rows
+		if ($table == 'context' && (empty($sql_set['context_consultants']) && $sql_set['context_consultants'] !== "0")) {
+			error_message("Context must be associated with at least one consultant.");
+		}
+
+		$f = preprocess_sqlset($table,$sql_set);
+		$sql = "insert into $table set " . get_set_sql($f);
+
+		if(!mysqli_query($dbConn, $sql)) {
 		error_message();
 	}
 	$id = mysqli_insert_id($dbConn);

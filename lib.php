@@ -44,7 +44,7 @@ function get_record($table, $id, $collector_id=false) {
     if (!$user->is_admin()) $collector_id = $user->get('id');
     $and = ($collector_id) ? "and collector_id=$collector_id" : '';
 
-    $sql = "select * from $table where ${table}_id = $id $and";
+    $sql = "select * from $table where {$table}_id = $id $and";
     $result = mysqli_query($dbConn, $sql);
 
     $output = array();

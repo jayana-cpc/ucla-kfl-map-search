@@ -1,6 +1,15 @@
 <?php
-require_once (__DIR__.'/../box-jwt-php/bootstrap/autoload.php');
-require_once (__DIR__.'/../box-jwt-php/helpers/helpers.php');
+// Gracefully handle missing Box SDK
+$box_autoload = __DIR__ . '/../box-jwt-php/bootstrap/autoload.php';
+$box_helpers  = __DIR__ . '/../box-jwt-php/helpers/helpers.php';
+$BOX_AVAILABLE = file_exists($box_autoload) && file_exists($box_helpers);
+if ($BOX_AVAILABLE) {
+    require_once $box_autoload;
+    require_once $box_helpers;
+} else {
+    http_response_code(503);
+    exit("File downloads unavailable: Box SDK not installed.");
+}
 
 use Box\Auth\BoxJWTAuth;
 use Box\BoxClient;

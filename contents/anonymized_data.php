@@ -46,7 +46,9 @@ if (isset($data[0])) {
   $connection = get_connection();
   $statement = $connection->prepare($query);
   if (sizeof($query->params()) >= 1) {
-    call_user_func_array(array($statement, 'bind_param'), $query->params());
+    // PHP 8: positional args cannot follow named; ensure numeric array
+    $params = array_values($query->params());
+    call_user_func_array(array($statement, 'bind_param'), $params);
   }
   $statement->execute();
   $statement->bind_result(
@@ -95,23 +97,31 @@ if (isset($data[0])) {
 
   $collector_array = array_filter(
     array($collector_gender, $collector_age, $collector_edu_level,
-      $collector_occupation, $collector_language), 'strlen');
+      $collector_occupation, $collector_language),
+    function ($v) { return $v !== null && $v !== ''; }
+  );
   $collector_text = implode(', ', $collector_array);
 
   $consultant_array = array_filter(
     array($consultant_gender, $consultant_age, $consultant_edu_level, 
       $consultant_occupation, $consultant_language, $consultant_heritage,
-      $consultant_city, $consultant_state, $consultant_country), 'strlen');
+      $consultant_city, $consultant_state, $consultant_country),
+    function ($v) { return $v !== null && $v !== ''; }
+  );
   $consultant_text = implode(', ', $consultant_array);
 
   $context_array_p1 = array_filter(
-    array($context_date, $context_time, $context_weather), 'strlen');
+    array($context_date, $context_time, $context_weather),
+    function ($v) { return $v !== null && $v !== ''; }
+  );
   if($context_otherpresent_num != '') {
     $context_text_p2 = "People Present: " . $context_otherpresent_num
      . "<br/>";
   }
-  $context_array_p3 = array_filter(array($context_place, $context_city, 
-    $context_state, $context_country), 'strlen');
+  $context_array_p3 = array_filter(
+    array($context_place, $context_city, $context_state, $context_country),
+    function ($v) { return $v !== null && $v !== ''; }
+  );
   $context_text = implode(', ', $context_array_p1) . "<br/>";
   if(isset($context_text_p2)) $context_text .= $context_text_p2;
   $context_text .= implode(', ', $context_array_p3);

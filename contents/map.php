@@ -1,53 +1,54 @@
 <?php
-header("Location: ../index.php"); /* Redirect browser */
-exit();
+// Map page uses its own asset set; clear inherited includes to avoid conflicts
+$cms->css = array();
+$cms->js = array();
 
-array_map(function ($file) use ($cms) {
-    $cms->css[] = "map_search/bower_components/jqueryui/themes/kfl-theme/$file.css";
-    }, array('jquery-ui.min',) // 'jquery-ui-1.10.3.custom') 
-);
+// Restore site layout CSS (absolute paths to avoid base tag issues)
+$cms->css[] = "/css/layout.css";
+$cms->css[] = "/css/menu.css";
 
-$cms->css[] = "map_search/bower_components/jquery-ui-multiselect/jquery.multiselect.css";
-$cms->css[] = "map_search/bower_components/jQRangeSlider-5.5.0/css/classic-min.css";
-$cms->css[] = "map_search/main.css";
+// CSS for widgets and map UI
+$cms->css[] = "/map_search/bower_components/jqueryui/themes/base/jquery-ui.css";
+$cms->css[] = "/map_search/bower_components/jquery-ui-multiselect/jquery.multiselect.css";
+$cms->css[] = "/map_search/bower_components/jQRangeSlider-5.5.0/css/classic.min.css";
+$cms->css[] = "/map_search/main.css";
 
-array_map(function ($file) use ($cms) {
-    $cms->js[] = "map_search/bower_components/$file.js";
-}, array(
-    // Dependencies
-    'jquery/jquery.min',
-    'jqueryui/ui/jquery-ui',
-    'jquery-collapsible/jquery.collapsible',
-    'underscore/underscore-min',
-    'backbone/backbone-min',
-    'mustache/mustache',
-    'openlayers/OpenLayers',
-    'jquery-ui-multiselect/src/jquery.multiselect',
-    'jQRangeSlider-5.5.0/jQAllRangeSliders-min',
-    'vc/src/VC',
-    'vc/src/SearchResultsLayer',
+// JS (ordered: core -> UI -> plugins -> app)
+$cms->js[] = "/map_search/bower_components/jquery/jquery.min.js";          // jQuery 2.0.3
+$cms->js[] = "/map_search/bower_components/jqueryui/jquery-ui.min.js";     // jQuery UI 1.10.x browser build
+$cms->js[] = "/map_search/bower_components/jquery-ui-multiselect/jquery.multiselect.js";
+// Local jQRangeSlider plugins (no CDN)
+$cms->js[] = "/map_search/bower_components/jQRangeSlider-5.5.0/jQRangeSliderMouseTouch.min.js";
+$cms->js[] = "/map_search/bower_components/jQRangeSlider-5.5.0/jQRangeSliderDraggable.min.js";
+$cms->js[] = "/map_search/bower_components/jQRangeSlider-5.5.0/jQRangeSliderHandle.min.js";
+$cms->js[] = "/map_search/bower_components/jQRangeSlider-5.5.0/jQRangeSliderBar.min.js";
+$cms->js[] = "/map_search/bower_components/jQRangeSlider-5.5.0/jQRangeSliderLabel.min.js";
+$cms->js[] = "/map_search/bower_components/jQRangeSlider-5.5.0/jQRangeSlider.min.js";
+$cms->js[] = "/map_search/bower_components/jQRangeSlider-5.5.0/jQRuler.min.js";
+$cms->js[] = "/map_search/bower_components/jquery-collapsible/jquery.collapsible.js";
+$cms->js[] = "/map_search/bower_components/underscore/underscore-min.js";
+$cms->js[] = "/map_search/bower_components/backbone/backbone-min.js";
+$cms->js[] = "/map_search/bower_components/mustache/mustache.js";
+$cms->js[] = "/map_search/bower_components/openlayers/OpenLayers.js";
+$cms->js[] = "/map_search/bower_components/vc/src/VC.js";
+$cms->js[] = "/map_search/bower_components/vc/src/SearchResultsLayer.js";
 
-));
-
-array_map(function ($file) use ($cms) {
-    $cms->js[] = "map_search/$file.js";
-}, array(
-    'AppRoot',
-    'input_form/Form',
-    'input_form/Query',
-    'map/ContextMonitor',
-    'map/Map',
-    'map/ResultLayer',
-    'result_list/Result',
-    'result_list/List',
-    'result_list/Collection',
-    'result_list/SummaryItem',
-));
+// App scripts
+$cms->js[] = "/map_search/AppRoot.js";
+$cms->js[] = "/map_search/input_form/Form.js";
+$cms->js[] = "/map_search/input_form/Query.js";
+$cms->js[] = "/map_search/map/ContextMonitor.js";
+$cms->js[] = "/map_search/map/Map.js";
+$cms->js[] = "/map_search/map/ResultLayer.js";
+$cms->js[] = "/map_search/result_list/Result.js";
+$cms->js[] = "/map_search/result_list/List.js";
+$cms->js[] = "/map_search/result_list/Collection.js";
+$cms->js[] = "/map_search/result_list/SummaryItem.js";
 
 $dbConn = get_connection();
 
 $query = "SELECT MIN(context_date) AS min_date, MAX(context_date) AS max_date "
-            . " FROM context WHERE context_date != '0000-00-00' AND context_date IS NOT NULL";
+            . " FROM context WHERE context_date IS NOT NULL AND context_date >= '1900-01-01'";
 $rsc = mysqli_query($dbConn, $query) or die("SQL Error: ". mysqli_error());
 $result = mysqli_fetch_assoc($rsc);
 
@@ -60,7 +61,7 @@ mysqli_close($dbConn);
     };
 </script>
 <script type="text/template" id="kfa-input-form-template">
-    <form action="#" class="search-form">
+    <form action="/map" onsubmit="return false;" class="search-form">
         <div class="fieldset-header collapsible">Collector<span></span></div>
         <div class="fieldset-body">
             <label for="collector-gender">Gender:</label>
@@ -243,4 +244,3 @@ $(function () {
     root.render();
 });
 </script>
-

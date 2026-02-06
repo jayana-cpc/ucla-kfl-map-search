@@ -9,8 +9,8 @@ require_once '../../lib.php';
 
 use QuB\Factory;
 
-$co_query = Factory::select('X(co.context_spatial_point) AS lng',
-    'Y(co.context_spatial_point) AS lat', 'COUNT(*) AS total')
+$co_query = Factory::select('ST_X(co.context_spatial_point) AS lng',
+    'ST_Y(co.context_spatial_point) AS lat', 'COUNT(*) AS total')
     ->from('data d', 'context co') 
     ->where('d.context_id = co.context_id')
         ->and("co.context_spatial_point IS NOT NULL")
@@ -232,23 +232,25 @@ if (isset($_GET['description'])) {
 $connection = get_connection();
 $statement = $connection->prepare($co_query);
 if (sizeof($co_query->params()) > 1) {
-    call_user_func_array(array($statement, 'bind_param'), $co_query->params());
+    $params = array_values($co_query->params());
+    call_user_func_array(array($statement, 'bind_param'), $params);
 }
 $statement->execute();
-$statement->bind_result($lat, $long, $total);
+$statement->bind_result($lng, $lat, $total);
 
 // return results as JSON
 
-while ($statement->fetch()) {
-    $coordinates[] = array(
-        'type' => 'Feature',
-        'geometry' => array(
-            'type' => 'Point',
-            'coordinates' => array($lat, $long)
+    while ($statement->fetch()) {
+        $coordinates[] = array(
+            'type' => 'Feature',
+            'geometry' => array(
+                'type' => 'Point',
+                // GeoJSON expects [lon, lat]
+                'coordinates' => array($lng, $lat)
        ),
-        'properties' => array(
-            'type' => 'context',
-            'total' => $total,
+            'properties' => array(
+                'type' => 'context',
+                'total' => $total,
        ),
    );
 }
@@ -263,4 +265,3 @@ if (isset($coordinates)) {
         "error" => "No Results Found",
        ));
 }
-
