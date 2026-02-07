@@ -3,7 +3,7 @@
 ## Quick start (Docker)
 
 1. Clone repository.
-2. Copy `.env.example` to `.env` and adjust values if desired (defaults are dev-friendly).
+2. Run `cp .env.example .env` and adjust values if desired.
 3. Build and run: `docker compose up -d`
 4. Open `http://localhost:8000/map`
 
