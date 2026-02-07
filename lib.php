@@ -1,5 +1,19 @@
 <?php
-include_once('dbconfig.php');
+
+// Load configuration: prefer dbconfig.php, fallback to environment variables.
+if (file_exists(__DIR__ . '/dbconfig.php')) {
+    include_once(__DIR__ . '/dbconfig.php');
+}
+
+// Fallbacks from environment if constants are not defined
+if (!defined('DB_HOST'))     define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+if (!defined('DB_USERNAME')) define('DB_USERNAME', getenv('DB_USERNAME') ?: 'kfl');
+if (!defined('DB_PASSWORD')) define('DB_PASSWORD', getenv('DB_PASSWORD') ?: 'kflpass');
+if (!defined('DB_NAME'))     define('DB_NAME', getenv('DB_NAME') ?: 'kfl');
+if (!defined('HOST'))        define('HOST', getenv('APP_HOST') ?: 'http://localhost:8000/');
+if (!defined('SECRET'))      define('SECRET', getenv('APP_SECRET') ?: 'dev-secret');
+if (!defined('DEV_LOGIN'))   define('DEV_LOGIN', filter_var(getenv('DEV_LOGIN'), FILTER_VALIDATE_BOOLEAN));
+
 include_once('user.php');
 
 define_passcode();
@@ -104,7 +118,8 @@ function check_auth() {
 }
 
 function define_passcode(){
-    $passcode = file_get_contents('mini/passcode.txt', FILE_USE_INCLUDE_PATH);
+    $passfile = __DIR__ . '/mini/passcode.txt';
+    $passcode = file_exists($passfile) ? file_get_contents($passfile) : '';
     define('PASSCODE', $passcode );
 }
 
