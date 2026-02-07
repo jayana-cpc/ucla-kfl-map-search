@@ -3,9 +3,8 @@
 ## Quick start (Docker)
 
 1. Clone repository.
-2. Copy `.env.example` file to new `.env` file and adjust the password only.
-3. Build and run: `docker compose up -d`
-4. Open `http://localhost:8000/map` 
+2. Build and run: `docker compose up -d`
+3. Open `http://localhost:8000/map` 
 
 ## Setup
 
