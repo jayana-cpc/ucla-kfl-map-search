@@ -1,20 +1,17 @@
-version: "3.9"
 
 services:
   db:
-    image: mysql:8.0
+    # Use seeded MySQL image for convenience; swap to mysql:8.0 if you prefer mounting SQL files instead
+    image: jayanacpc/kfl-mysql-seeded:latest
     restart: unless-stopped
-    env_file: .env
+    env_file: .env.example
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-kfl}
       MYSQL_USER: ${MYSQL_USER:-kfl}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-kflpass}
-    command: --default-authentication-plugin=mysql_native_password
     volumes:
       - db_data:/var/lib/mysql
-      - ./migrations/initial_setup.sql:/docker-entrypoint-initdb.d/10_initial_setup.sql:ro
-      - ./migrations/dev_seed.sql:/docker-entrypoint-initdb.d/20_dev_seed.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -24,7 +21,7 @@ services:
   web:
     build: .
     restart: unless-stopped
-    env_file: .env
+    env_file: .env.example
     depends_on:
       db:
         condition: service_healthy

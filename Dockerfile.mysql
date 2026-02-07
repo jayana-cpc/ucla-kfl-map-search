@@ -1,0 +1,8 @@
+FROM mysql:8.0
+
+# Keep auth plugin consistent
+CMD ["mysqld", "--default-authentication-plugin=mysql_native_password"]
+
+# Seed schema and sample data on first start
+COPY migrations/initial_setup.sql /docker-entrypoint-initdb.d/10_initial_setup.sql
+COPY migrations/dev_seed.sql      /docker-entrypoint-initdb.d/20_dev_seed.sql

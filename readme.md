@@ -13,7 +13,7 @@ Simply clone the repository:
 3. Open `http://localhost:8000/` (with `DEV_LOGIN=1` in `.env`, you are auto-logged in for dev).
 
 Notes:
-- MySQL seeds from `migrations/initial_setup.sql` and `migrations/dev_seed.sql` on first run.
+- By default, the bundled compose uses a pre-seeded MySQL image (`jayanacpc/kfl-mysql-seeded:latest`). If you prefer vanilla `mysql:8.0`, swap the image and mount the SQL files from `migrations/` into `/docker-entrypoint-initdb.d/`.
 - Box integration is disabled by default; set `BOX_ENABLED=1` and mount `box-jwt-php/` if you need it.
 
 ### Box
