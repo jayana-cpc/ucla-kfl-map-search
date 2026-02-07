@@ -7,11 +7,8 @@
 3. Build and run: `docker compose up -d`
 4. Open `http://localhost:8000/map`
 
-Notes:
-- The compose file reads `.env` and does not bind-mount source; it uses the baked image contents. For live code mounting, create a dev override.
-- Default DB creds are in `.env.example`; keep `DB_*` and `MYSQL_*` in sync.
 
-## Setup
+## Old Setup
 
 Simply clone the repository:
 
