@@ -4,7 +4,7 @@ services:
     # Use seeded MySQL image for convenience; swap to mysql:8.0 if you prefer mounting SQL files instead
     image: jayanacpc/kfl-mysql-seeded:latest
     restart: unless-stopped
-    env_file: .env.example
+    env_file: .env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-kfl}
@@ -21,7 +21,7 @@ services:
   web:
     build: .
     restart: unless-stopped
-    env_file: .env.example
+    env_file: .env
     depends_on:
       db:
         condition: service_healthy
@@ -36,8 +36,6 @@ services:
       APP_SECRET: ${APP_SECRET:-dev-secret}
       DEV_LOGIN: ${DEV_LOGIN:-1}
       BOX_ENABLED: ${BOX_ENABLED:-0}
-    volumes:
-      - .:/var/www/html:ro
 
 volumes:
   db_data:

@@ -3,9 +3,13 @@
 ## Quick start (Docker)
 
 1. Clone repository.
-2. Copy `.env.example` file to new `.env` file and adjust the password only.
+2. Copy `.env.example` to `.env` and adjust values if desired (defaults are dev-friendly).
 3. Build and run: `docker compose up -d`
-4. Open `http://localhost:8000/map` 
+4. Open `http://localhost:8000/map`
+
+Notes:
+- The compose file reads `.env` and does not bind-mount source; it uses the baked image contents. For live code mounting, create a dev override.
+- Default DB creds are in `.env.example`; keep `DB_*` and `MYSQL_*` in sync.
 
 ## Setup
 
