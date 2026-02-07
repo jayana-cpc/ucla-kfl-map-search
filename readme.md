@@ -1,20 +1,17 @@
 # Korean Folklore Archive
 
+## Quick start (Docker)
+
+1. Clone repository.
+2. Copy `.env.example` file to new `.env` file and adjust the password only.
+3. Build and run: `docker compose up -d`
+4. Open `http://localhost:8000/map` 
+
 ## Setup
 
 Simply clone the repository:
 
 `git clone git@bitbucket.org:uclacdh/kfl-map-search.git`
-
-## Quick start (Docker)
-
-1. Copy `.env.example` to `.env` and adjust values if needed.
-2. Build and run: `docker-compose up -d --build`
-3. Open `http://localhost:8000/` (with `DEV_LOGIN=1` in `.env`, you are auto-logged in for dev).
-
-Notes:
-- By default, the bundled compose uses a pre-seeded MySQL image (`jayanacpc/kfl-mysql-seeded:latest`). If you prefer vanilla `mysql:8.0`, swap the image and mount the SQL files from `migrations/` into `/docker-entrypoint-initdb.d/`.
-- Box integration is disabled by default; set `BOX_ENABLED=1` and mount `box-jwt-php/` if you need it.
 
 ### Box
 
